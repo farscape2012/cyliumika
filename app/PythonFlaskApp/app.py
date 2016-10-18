@@ -1,6 +1,17 @@
 # encoding=utf8-
+import pymongo
+import os
+import sys
 from flask import Flask,render_template, request, redirect, session, json
-import web
+
+__dir__ = os.path.dirname(__file__)
+LIB_DIR = os.path.realpath(os.path.join(__dir__, '../../lib'))
+print(LIB_DIR)
+sys.path.append(LIB_DIR)
+
+import mongodb
+mongoDB = mongodb.MongoDBClient()
+mongoDB.db_con(host='127.0.0.1', username='admin', password='admin', port=27017, database='moon', collection='user')
 
 app = Flask(__name__)
 app.secret_key = 'this is very secret key in messagemoon'
@@ -24,6 +35,11 @@ def signUp():
     _name = request.form['inputName']
     _email = request.form['inputEmail']
     _password = request.form['inputPassword']
+    print("name: {}, _email: {}, _password: {}".format(_name, _email, _name))
+    try:
+        mongoDB.insert_one({"_id": _name, "email": _email, "password": _password, "email_ack": False})
+    except pymongo.errors.DuplicateKeyError:
+        return json.dumps({'html':'<span>All fields good !!</span>'})
     # validate the received values
     if _name and _email and _password:
         return json.dumps({'html':'<span>All fields good !!</span>'})
@@ -36,26 +52,16 @@ def validateLogin():
         _username = request.form['inputEmail']
         _password = request.form['inputPassword']
 
-        #if len(data) > 0:
-            #if check_password_hash(str(data[0][3]),_password):
-            #    session['user'] = data[0][0]
-        #TODO check login
-        if _username == "mika.koskimaki@gmail.com":
-            # TODO check password
-            if _password == "mm":
-                session['username'] = _username
-                return redirect('/userhome')
-            else:
-                return render_template('signin.html',error = 'Wrong Password. Try again')
+        doc = mongoDB.query(query={"email": _username, "password": _password})
+        if doc.count() == 1:
+            return redirect('/userhome')
         else:
             return render_template('signin.html',error = 'Wrong Email address. Try again')
-
 
     except Exception as e:
         return render_template('error.html',error = str(e))
     finally:
         print "closing"
-        #TODO close mongodb??
 
 @app.route('/userhome')
 def userhome():
