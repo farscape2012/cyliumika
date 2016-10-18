@@ -39,6 +39,7 @@ def signUp():
     try:
         mongoDB.insert_one({"_id": _name, "email": _email, "password": _password, "email_ack": False})
     except pymongo.errors.DuplicateKeyError:
+        ## I dont know what should return here. I just return random output
         return json.dumps({'html':'<span>All fields good !!</span>'})
     # validate the received values
     if _name and _email and _password:
