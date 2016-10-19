@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MessageMoon</title>
+
+
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/signup.css') }}">
+
+  </head>
+  <script>
+    $(function() {
+      $('#btnSignUp').click(function() {
+
+          $.ajax({
+              url: '/showSignUp',
+              data: $('form').serialize(),
+              type: 'POST',
+              success: function(response) {
+                  console.log(response);
+              },
+              error: function(error) {
+                  console.log(error);
+              }
+          });
+      });
+  });
+  </script>
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" ><a href="home">Home</a></li>
+            <li role="presentation"><a href="login">Sign In</a></li>
+            <li role="presentation" class="active"><a href="#">Sign Up</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">MessageMoon</h3>
+      </div>
+
+      {% macro render_field(field) %}
+        <dt>{{ field.label }}
+        <dd>{{ field(**kwargs)|safe }}
+        {% if field.errors %}
+          <ul class=errors>
+          {% for error in field.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+        </dd>
+      {% endmacro %}
+      <form method=post action="/register">
+        <dl>
+          {{ render_field(form.username) }}
+          {{ render_field(form.email) }}
+          {{ render_field(form.password) }}
+          {{ render_field(form.confirm) }}
+          {{ render_field(form.accept_tos) }}
+        </dl>
+        <p><input type=submit value=Register>
+     </div>
+  </body>
+</html>
