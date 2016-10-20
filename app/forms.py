@@ -6,5 +6,5 @@ from wtforms.validators import DataRequired
 class LoginForm(Form):
     """Login form to access writing and settings pages"""
 
-    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])

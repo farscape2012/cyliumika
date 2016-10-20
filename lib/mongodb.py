@@ -77,6 +77,18 @@ class MongoDBClient:
             return self.collection.find(query,projection, skip=skip, limit=limit)
         except Exception as e:
             raise RuntimeError("Unexcepted error %s %s " %(type(e), e))
+    
+    def query_one(self, query=None, projection=None):
+        """An user interace to query database. It returns one document.
+        args:
+            query (a dictionary): used to filter database
+            projection (a dictionary) : used to project retults. It only returns the projected fields.
+        """
+        try:
+            return self.collection.find_one(query,projection)
+        except Exception as e:
+            raise RuntimeError("Unexcepted error %s %s " %(type(e), e))
+
     def query_and_print_doc(self, query=None, projection=None, skip=0, limit=0):
         """An user interace to query database. Default it returns all documents.
     

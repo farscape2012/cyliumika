@@ -1,4 +1,6 @@
 flask
+Flask-Login
+Flask-WTF
 pymongo
 pyyaml
 requests
