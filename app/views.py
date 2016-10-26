@@ -16,9 +16,8 @@ sys.path.append(LIB_DIR)
 
 import mongodb
 mongoDB = mongodb.MongoDBClient()
+print mongoDB
 mongoDB.db_con(host='127.0.0.1', username='admin', password='admin', port=27017, database='moon', collection='user')
-
-
 
 class RegistrationForm(Form):
     username = StringField('Username', [validators.Length(min=4, max=25)])
@@ -42,7 +41,7 @@ def register():
         except pymongo.errors.DuplicateKeyError:
             ## I dont know what should return here. I just return random output
             return json.dumps({'html':'<span>All fields good !!</span>'})
-        
+
         #try:
         #    app.config['USERS_COLLECTION'].insert({"_id": form.username.data, "email": form.email.data, "password": _password_hash, "email_ack": False})
         #    print "User created."
@@ -110,3 +109,12 @@ def load_user(username):
     if not doc:
         return None
     return User(doc['_id'])
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    return render_template('test.html')
+
+@app.route('/part', methods=['GET', 'POST'])
+def part():
+    print "part"
+    return render_template('part.html')
